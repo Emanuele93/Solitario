@@ -1,0 +1,2 @@
+# Solitario
+Soltario game
