@@ -38,14 +38,27 @@ public class Card : MonoBehaviour
     public void SetNewPosition(Vector3 pos, bool endFlip = false)
     {
         action = new MoveCard(pos, movementSpeed, gameObject, endFlip);
+        oldPos = pos;
     }
 
     public void SetNewPositionCascade(Vector3 pos)
     {
-        action = new MoveCardCascade(pos, movementSpeed, gameObject);
+        Vector3 dif;
+        if (cardUp != null)
+        {
+            dif = cardUp.oldPos - oldPos;
+            action = new MoveCard(pos, movementSpeed, gameObject);
+            oldPos = pos;
+            cardUp.SetNewPositionCascade(pos + dif);
+        }
+        else
+        {
+            action = new MoveCard(pos, movementSpeed, gameObject);
+            oldPos = pos;
+        }
     }
 
-    public void SetPositionCascade(Vector3 pos)
+    private void SetPositionCascade(Vector3 pos)
     {
         Vector3 dif;
         if (cardUp != null)
@@ -79,10 +92,7 @@ public class Card : MonoBehaviour
     private void OnMouseDown()
     {
         if ((Time.time - doubleClickStart) > 0.3f && action.GetType().Name == "NoAction")
-        {
-            oldPos = transform.position;
-            startDiff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - oldPos;
-        }
+            startDiff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
     }
 
     void OnMouseUp()
@@ -90,7 +100,7 @@ public class Card : MonoBehaviour
         if ((Time.time - doubleClickStart) <= 0.3f)
         {
             if (!GameManager.Instance.GetHelp(this))
-                action = new MoveCardCascade(oldPos, movementSpeed, gameObject);
+                SetNewPositionCascade(oldPos);
             doubleClickStart = -1;
         }
         else
@@ -115,7 +125,7 @@ public class Card : MonoBehaviour
                 }
             }
 
-            action = new MoveCardCascade(oldPos, movementSpeed, gameObject);
+            SetNewPositionCascade(oldPos);
         }
     }
 

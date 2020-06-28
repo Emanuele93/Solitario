@@ -221,7 +221,7 @@ MonoBehaviour:
   suitSprite: {fileID: 5292720198979374303}
   suitSmallSprite: {fileID: 3627863851430504711}
   numberSprite: {fileID: 4858202576077870922}
-  movementSpeed: 3
+  movementSpeed: 1.5
 --- !u!95 &6953085486214316243
 Animator:
   serializedVersion: 3
